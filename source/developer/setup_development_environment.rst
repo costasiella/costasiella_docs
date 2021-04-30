@@ -11,7 +11,7 @@ Install required packages
 
 .. code-block:: bash
 
-    sudo apt install curl git mysql-server python3-mysqldb libmysqlclient-dev redis-server redis-tools python-pip
+    sudo apt install curl git mysql-server python3-mysqldb libmysqlclient-dev redis-server redis-tools python-pip libffi-dev
     sudo pip install virtualenvwrapper
 
 
@@ -24,8 +24,8 @@ MySQL database & Redis server
     CREATE DATABASE costasiella CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     CREATE DATABASE vault CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     create user 'user'@'localhost' identified by 'password';
-    grant all privileges on costasiella.* to ‘user’@’localhost’;
-    grant all privileges on vault.* to ‘user’@’localhost’;
+    grant all privileges on costasiella.* to 'user'@'localhost';
+    grant all privileges on vault.* to 'user'@'localhost';
     flush privileges;
 
 Vault setup
