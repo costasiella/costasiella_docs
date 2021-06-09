@@ -152,6 +152,7 @@ Go to <your costasiella root dir>/app (this folder should contain a file called 
     ./manage.py migrate 
     ./manage.py createsuperuser
     # fill out questions to create initial super admin user
+    ./manage.py loaddata costasiella/fixtures/*.json
     ./manage.py runserver
 
 Start the npm development server;
