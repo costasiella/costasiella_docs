@@ -196,9 +196,17 @@ Click Save.
 
 Almost there, log out of the admin page by clicking LOG OUT in the top right corner. 
 
+*Make the created user an employee to gain access to the backend*
 
+Run the following code in a mysql terminal with a user that has permissions to modify your database.
+
+.. code-block:: bash
+
+    update costasiella_account set employee=1 where id=2;
+
+
+    
 Now log in using the credentials your created.
-
 
 In case a “CSRF Token Failed” error message shows, click the back button in the browser and try again. 
 It might show up in some cases during the first login in the development environment. After a refresh/retry it shouldn’t show anymore.
