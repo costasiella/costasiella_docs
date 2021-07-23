@@ -18,10 +18,16 @@ So far not much here, but will be added bit by bit in the coming months...
 
     developer/setup_development_environment.rst
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Developer Reference
+
+    developer/reference/tinymce_setup.rst
+
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
 * :ref:`search`

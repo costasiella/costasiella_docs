@@ -53,6 +53,9 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 
+# Add globalTOC to sidebar for any page
+html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'] }
+
 # -- Extension configuration -------------------------------------------------
 
 # -- Options for todo extension ----------------------------------------------
