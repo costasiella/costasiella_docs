@@ -14,6 +14,12 @@ So far not much here, but will be added bit by bit in the coming months...
 
 .. toctree::
     :maxdepth: 1
+    :caption: System administration
+
+    sysadmin/openstudio_import.rst
+
+.. toctree::
+    :maxdepth: 1
     :caption: Developer
 
     developer/setup_development_environment.rst
