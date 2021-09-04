@@ -25,14 +25,23 @@ The production setup example in this guide consists of the following components:
 
 A Ubuntu 20.04 server (Host) with the following components:
 
-- MySQL (Host)
 - Nginx (Host)
+- MySQL server (Host)
 - Hashicorp Vault (Host)
 - Costasiella frontend (Host)
 - Redis (Docker)
 - Costasiella backend (Docker)
 - Costasiella celery worker (Docker)
 - Costasiella celery beat (Docker)
+
+Quick start
+-----------
+
+In case you're looking to evaluate Costasiella, the guide on setting up a local development environment might be a bit quicker.
+However, never use that setup on a production system. It's not secure enough, doesn't scale well when it comes to performance and will be hard to maintain.
+
+For a production system, there are just a number some components that need to be installed and configured to get Costasiella up and running.
+No way around it unfortunately.
 
 Install required packages
 -------------------------
