@@ -92,6 +92,7 @@ Go to the folder where you want to keep the Costasiella source files
 .. code-block:: bash
 
     git clone https://github.com/costasiella/costasiella.git
+    git clone https://github.com/costasiella/frontend.git
 
 NPM
 ----
@@ -100,7 +101,7 @@ NPM
 
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     sudo apt install nodejs
-    cd app/cs_admin
+    cd frontend
     # install node modules
     npm install
 
@@ -156,7 +157,7 @@ Go to <your costasiella root dir>/app (this folder should contain a file called 
     ./manage.py runserver
 
 Start the npm development server;
-Open a new terminal tab or window and go the <your costasiella root dir>/app/cs_admin
+Open a new terminal tab or window and go your costasiella frontend root dir.
 
 .. code-block
 
@@ -165,7 +166,7 @@ Open a new terminal tab or window and go the <your costasiella root dir>/app/cs_
 A webbrowser will open to localhost:3000. There’s a proxy that’ll allow access to some django pages using the /d path in the address.
 eg. http://localhost:3000/d/admin
 
-The Django server runs on port 8000 in case you'd like to access it directly.
+The Django development server runs on port 8000 in case you'd like to access it directly.
 
 Create a user and log in
 -------------------------
@@ -205,7 +206,6 @@ Run the following code in a mysql terminal with a user that has permissions to m
     update costasiella_account set employee=1 where id=2;
 
 
-    
 Now log in using the credentials your created.
 
 In case a “CSRF Token Failed” error message shows, click the back button in the browser and try again. 
