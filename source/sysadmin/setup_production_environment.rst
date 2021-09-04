@@ -34,3 +34,43 @@ A Ubuntu 20.04 server (Host) with the following components:
 - Costasiella celery worker (Docker)
 - Costasiella celery beat (Docker)
 
+Install required packages
+-------------------------
+
+.. code-block:: bash
+    
+    sudo apt install docker docker-compose git mysql-server nginx-full
+
+Set server time to UTC
+----------------------
+
+.. code-block:: bash
+
+    sudo timedatectl set-timezone UTC
+
+
+MySQL configuration
+-------------------
+
+**Configure server to listen to localhost and docker network interface**
+
+**Create databases**
+
+**Create users**
+
+
+Install Hashicorp Vault
+-------------------------
+
+Please visit the following URL and follow the setup steps of your chosen method. For this guide using the package manager (apt) is assumed.
+https://learn.hashicorp.com/tutorials/vault/getting-started-install
+
+After installing vault, make it start at boot and configure it to use a MySQL database for it's storage instead of files. 
+
+.. code-block:: bash
+
+    sudo systemctl enable vault
+
+
+
+- Craete & set a new django secret key (50 characters of random stuff will do)s
