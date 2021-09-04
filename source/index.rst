@@ -16,6 +16,7 @@ So far not much here, but will be added bit by bit in the coming months...
     :maxdepth: 1
     :caption: System administration
 
+    sysadmin/setup_production_environment.rst
     sysadmin/openstudio_import.rst
 
 .. toctree::
