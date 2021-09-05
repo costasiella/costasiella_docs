@@ -164,8 +164,26 @@ Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite e
     #  key_label      = "vault-hsm-key"
     #  hmac_key_label = "vault-hsm-hmac-key"
 
+**Perform initial setup for Vault**
 
-    #TODO: Add transit key for costasiella
+Create an SSH tunnel to port 8200 on your Costasiella server.
+Port 8200 should not be reachable on the server from the word wide web, please firewall it.
+Or a cleaner approach is to create multiple listeners. One for localhost and one for the docker interface. 
+Have a look here at the Vault docs for more info:
+https://www.vaultproject.io/docs/configuration/listener/tcp
+
+For now we keep it simple in this guide. Vault will listen on all interfaces and we'll assume that you've firewalled your external interface.
+Using this command on your computer (Linux or Mac) will allow you to access the Vault UI on the server from http://localhost:8200 on your computer.
+
+.. code-block::bash
+
+    ssh -C -L 8200:127.0.0.1:8200 -N <IP of your Costasiella server>
+
+
+**Add a transit key**
+
+
+
 
 Backend setup preparation
 -------------------------
