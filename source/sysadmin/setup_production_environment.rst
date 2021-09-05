@@ -61,11 +61,29 @@ Set server time to UTC
 MySQL configuration
 -------------------
 
-**Configure server to listen to localhost and docker network interface**
+Edit mysql server config in /etc/mysql/mysql.conf.d/mysqld.cnf.
+Set the bind address to localhost (127.0.0.1) and the docker interface address (172.18.0.1 in this example).
+Restart the mysql service after chaning the configuration
 
-**Create databases**
+.. code-block:: bash
 
-**Create users**
+    bind-address            = 127.0.0.1,172.18.0.1
+
+
+Create database for Costasiella & Vault.
+In this example a user with the username "user" and password "password" is created. 
+This user can access the MySQL server from the 172.18.0.0/16 docker subnet.
+Something more secure is hightly recommended.
+
+.. code-block:: bash
+
+    sudo mysql
+    mysql> create database costasiella;
+    mysql> create database vault;
+    mysql> create user 'user'@'172.18.%' identified by 'password';
+    mysql> grant all privileges on costasiella.* to 'user'@'172.18.%';
+    mysql> grant all privileges on vault.* to 'user'@'172.18.%';
+    mysql> flush privileges;
 
 
 Install Hashicorp Vault
@@ -80,6 +98,99 @@ After installing vault, make it start at boot and configure it to use a MySQL da
 
     sudo systemctl enable vault
 
+Configure Vault to use MySQL storage and don't use TLS for this example guide to keep things simple. 
+In production it's recommended to configure this.
+
+Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite editor.
+
+- Comment out the file storage section
+- Configure MySQL storage
+- Disable TLS
+
+.. code-block:: bash
+
+    # Full configuration options can be found at https://www.vaultproject.io/docs/configuration
+
+    ui = true
+
+    #mlock = true
+    #disable_mlock = true
+
+    #storage "file" {
+    #  path = "/opt/vault/data"
+    #}
+    #
+
+    storage "mysql" {
+    username = "user"
+    password = "password"
+    database = "vault"
+    }
+
+    #storage "consul" {
+    #  address = "127.0.0.1:8500"
+    #  path    = "vault"
+    #}
+
+    # HTTP listener
+    #listener "tcp" {
+    #  address = "127.0.0.1:8200"
+    #  tls_disable = 1
+    #}
+
+    # HTTPS listener
+    listener "tcp" {
+    address       = "0.0.0.0:8200"
+    tls_disable   = true
+    #  tls_cert_file = "/opt/vault/tls/tls.crt"
+    #  tls_key_file  = "/opt/vault/tls/tls.key"
+    }
+
+    # Enterprise license_path
+    # This will be required for enterprise as of v1.8
+    #license_path = "/etc/vault.d/vault.hclic"
+
+    # Example AWS KMS auto unseal
+    #seal "awskms" {
+    #  region = "us-east-1"
+    #  kms_key_id = "REPLACE-ME"
+    #}
+
+    # Example HSM auto unseal
+    #seal "pkcs11" {
+    #  lib            = "/usr/vault/lib/libCryptoki2_64.so"
+    #  slot           = "0"
+    #  pin            = "AAAA-BBBB-CCCC-DDDD"
+    #  key_label      = "vault-hsm-key"
+    #  hmac_key_label = "vault-hsm-hmac-key"
+
+
+    #TODO: Add transit key for costasiella
+
+Backend setup preparation
+-------------------------
+
+**Create directories to hold docker bind mounts**
+
+.. code-block:: bash
+
+    mkdir -pv /opt/docker/mounts/costasiella/media
+    mkdir -pv /opt/docker/mounts/costasiella/sockets
+    mkdir -pv /opt/docker/mounts/costasiella/static
+
+**Fetch backend code from GitHub**
+
+The settings directory is copied to a separate bind mount point so it can persist after an update.
+
+.. code-block:: bash
+
+    cd /opt/docker/mounts/costasiella
+    git clone https://github.com/costasiella/costasiella.git
+    cp -prv /opt/docker/mounts/costasiella/costasiella/app/app/settings /opt/docker/mounts/costasiella/settings
+
+**Edit Django settings**
+
+.. code-block:: bash
 
 
 - Craete & set a new django secret key (50 characters of random stuff will do)s
