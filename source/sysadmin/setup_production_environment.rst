@@ -164,15 +164,24 @@ Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite e
     #  key_label      = "vault-hsm-key"
     #  hmac_key_label = "vault-hsm-hmac-key"
 
+Restart the vault service to reload the configuration file.
+
+Add the following to your .bashrc or .zshrc or whatever file your shell uses.
+
+.. code-block::bash
+
+    export VAULT_ADDR=http://127.0.0.1:8200
+
+
 **Perform initial setup for Vault**
 
-Create an SSH tunnel to port 8200 on your Costasiella server.
+Create an SSH tunnel to map port 8200 on your Costasiella server to port 8200 on your device.
 Port 8200 should not be reachable on the server from the word wide web, please firewall it.
 Or a cleaner approach is to create multiple listeners. One for localhost and one for the docker interface. 
 Have a look here at the Vault docs for more info:
 https://www.vaultproject.io/docs/configuration/listener/tcp
 
-For now we keep it simple in this guide. Vault will listen on all interfaces and we'll assume that you've firewalled your external interface.
+For now we keep it simple in this guide. Vault will listen on all interfaces and we'll assume that you've firewalled the external interface of your Costasiella server.
 Using this command on your computer (Linux or Mac) will allow you to access the Vault UI on the server from http://localhost:8200 on your computer.
 
 .. code-block::bash
@@ -182,8 +191,72 @@ Using this command on your computer (Linux or Mac) will allow you to access the 
 
 **Add a transit key**
 
+Open a browser and open the Vault web UI at http://localhost:8200 to do the initial setup.
+Set for example 5 key shares, with a threshold of 3 and click Initialize.
 
+Download the keys and store them somewhere secure (eg. encrypted in a password manager database). You'll need them everytime Vault starts to unseal it and you'll need the root token for administration.
+*Continue to unseal*
 
+Add 3 of the 5 keys, one by one, to unseal.
+Log in using the root token.
+
+Go to Secrets and choose *Enable new engine*. 
+Choose transit and click Next.
+Accept the default path called transit and click *Enable engine*.
+
+Create an encryption key for Costasiella by clicking *Create encryption key*. 
+In this guide the key name "Costasiella" will be used. Add that to the name field and click *Create encryption key*.
+
+**Create a policy**
+
+To avoid having to use the root token in Costasiella, we'll create a new token to which we'll assign a policy that's limited to using the Costasiella transit key and no other functionality withing vault.
+
+Click *Policies* in the main menu.
+Click *Create ACL policy*. 
+
+Name it something clear and easy to remember. In this guide "use_costasiella_transit" will be used for the policy name.
+Add the following to the *Policy* field.
+
+.. code-block::
+
+    # Vault transit key policy
+    path "transit/encrypt/costasiella" {
+    capabilities = ["update" ] 
+    }
+    path "transit/decrypt/costasiella" {
+    capabilities = ["update" ] 
+    }
+
+    # List existing keys in UI
+    path "transit/keys" {
+    capabilities = [ "list" ]
+    }
+
+    # Enable to select the orders key in UI
+    path "transit/keys/costasiella" {
+    capabilities = [ "read" ]
+    }
+
+Click *Create policy*
+
+**Create a token for Costasiella**
+
+In an SSH or console session on your server:
+
+.. code-block::bash
+
+    vault login <root token>
+    vault token create -policy=use_costasiella_transit -period=768h    
+
+Note down this token for later use in this guide and note that the token expires in 32 days (768 hours).
+For security reasons, Vault doesn't allow tokens to live longer than this by default. However, it's a periodic token so it can be renewed an unlimited number of times.
+
+.. code-block::bash
+
+    vault login <your created token>
+    vault token renew
+
+Don't forget to regularly renew your token to ensure Costasiella doesn't lose access to Vault.
 
 Backend setup preparation
 -------------------------
