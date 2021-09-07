@@ -171,24 +171,22 @@ The Django development server runs on port 8000 in case you'd like to access it 
 Create a user and log in
 -------------------------
 
-Open a webbrowser (tab) and go to localhost:3000/d/admin. 
-Log in using the admin credentials created earlier.
+Open a webbrowser (tab) and go to <your domain>/d/admin. 
+Log in using the initial superuser credentials created earlier.
 
-*Create group & assign group permissions*
+*Create an admin group & assign group permissions*
 
-Click Home in the breadcrumb top left.
 Under the AUTHENTICATION AND AUTHORIZATION SECTION click “Add” next to Groups.
 Give the group a recognizable name (eg. Admins) and click “Choose all” below the available permissions list.
 Click save
 
-*Create user*
+*Create user account*
 
-Click “add” next to users under the COSTASIELLA section.
-Add a new user and enter the user’s names and an email address in the edit screen after saving. Add the user to the group just created and click save.
+Click “add” next to accounts under the COSTASIELLA section.
+Add a new account and enter the user’s names and an email address in the edit screen after saving. 
+Add the account to the group just created and click save.
 
-*Create account for user*
-
-Click Home in the breadcrumb top left.
+*Create email address for account*
 
 Click “Add” next to Email addresses under the ACCOUNTS section. 
 Use the little looking glass next to “user” in the “Add email address” form to select the user just created. 
@@ -199,12 +197,12 @@ Almost there, log out of the admin page by clicking LOG OUT in the top right cor
 
 *Make the created user an employee to gain access to the backend*
 
-Run the following code in a mysql terminal with a user that has permissions to modify your database.
+Run the following code in a mysql terminal with a user that has permissions to modify your Costasiella database.
 
 .. code-block:: bash
 
+    use costasiella;
     update costasiella_account set employee=1 where id=2;
-
 
 Now log in using the credentials your created.
 

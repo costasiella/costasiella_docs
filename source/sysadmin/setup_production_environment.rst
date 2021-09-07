@@ -5,7 +5,9 @@ Prerequisites for this guide
 ----------------------------
 
 
-- A Ubuntu 20.04 server
+- A DNS record pointing to the server should be in place, eg. demo.costasiella.com. This is not supported: costasiella.com/demo
+- A Ubuntu 20.04 server 
+  (Another flavour of Linux is also ok, but you might have to change some package names and take into account that not every distro build their packages with the same parameters.)
 - At least 2 (v)CPU cores with performance at least equal to a 2nd generation Intel i5 desktop processor
 - At least 4 GB of RAM
 - Sufficient storage to hold the infrastructure components (5GB of free space should easily suffice, but more is recommended to have space for media in the application).
@@ -56,6 +58,40 @@ Set server time to UTC
 .. code-block:: bash
 
     sudo timedatectl set-timezone UTC
+
+Find docker interface IP address
+---------------------------------
+
+Use the command "ip a s" to show all network interfaces and look for the one called "docker0"
+
+.. code-block:: bash
+
+    $ ip a s
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+        valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host 
+        valid_lft forever preferred_lft forever
+    2: enp3s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+        link/ether 52:54:00:11:41:6d brd ff:ff:ff:ff:ff:ff
+        inet 192.168.122.233/24 brd 192.168.122.255 scope global dynamic noprefixroute enp3s0
+        valid_lft 3581sec preferred_lft 3581sec
+        inet6 fe80::3607:3352:99b6:b438/64 scope link noprefixroute 
+        valid_lft forever preferred_lft forever
+    3: br-a80887c9ec37: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+        link/ether 02:42:fa:8e:cc:22 brd ff:ff:ff:ff:ff:ff
+        inet 172.18.0.1/16 brd 172.18.255.255 scope global br-a80887c9ec37
+        valid_lft forever preferred_lft forever
+        inet6 fe80::42:faff:fe8e:cc22/64 scope link 
+        valid_lft forever preferred_lft forever
+    4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
+        link/ether 02:42:50:7f:0c:07 brd ff:ff:ff:ff:ff:ff
+        inet 172.18.0.1/16 brd 172.17.255.255 scope global docker0
+        valid_lft forever preferred_lft forever
+
+In this case the IP address of the docker interface is 172.18.0.1. This address will be used a few times in this guide. 
+Check which address your docker interface is configured to use and make a note somewhere it's easy to reference when you need it.
 
 
 MySQL configuration
@@ -281,7 +317,168 @@ The settings directory is copied to a separate bind mount point so it can persis
 
 **Edit Django settings**
 
+Edit /opt/docker/mounts/costasiella/settings/common.py
+
+- Replace the SECRET_KEY value with a random string that's 50 characters long.
+- Update the databases section to allow the backend to connect to the MySQL server running on the host.
+- Find the vault section and update it with the settings created earlier. (Note that the address 172.18.0.1 is the address of the docker interface).
+
+.. code-block:: bash
+    
+    ...
+    else:
+        DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'costasiella',
+            'USER': 'user',
+            'PASSWORD': 'password',
+            'HOST': '172.18.0.1',
+            'PORT': 3306
+        }
+    }
+    ...
+
+    ...
+    VAULT_URL = 'http://172.18.0.1:8200'
+    VAULT_TOKEN = '<The token you created here>'
+    VAULT_TRANSIT_KEY = 'costasiella'
+    ...
+
+Save the settings file
+
+Backend setup
+-------------
+
+**Starting containers**
+
+Now it's time to spin up the containers holding the backend code.
+To do this, we're going into the folder holding the code and use docker-compose to bring the environment online.
+
 .. code-block:: bash
 
+    cd /opt/docker/mounts/costasiella/costasiella
+    sudo docker-compose up
 
-- Craete & set a new django secret key (50 characters of random stuff will do)s
+**Getting the environment ready**
+
+Now a few commands need to be executed inside the backend container to:
+
+- Load fixtures
+- Create an initial super user
+
+.. code-block:: bash
+
+    docker exec -i <costasiella backend container name> /bin/bash
+    cd /opt/app
+    # Load fixtures
+    python manage.py loaddata costasiella/fixtures/*.json
+    # Create super user
+    ./manage.py createsuperuser
+
+
+Frontend setup
+--------------
+
+**Fetch frontend code from GitHub and copy into the webserver directory**
+
+.. code-block:: bash
+
+    cd /opt
+    git clone https://github.com/costasiella/frontend.git costasiella_frontend
+    cp -prv /opt/costasiella_frontend/build/ /var/www/html/
+
+**Configure Nginx**
+
+Create a file representing your hostname in /etc/nginx/sites-available.
+In this example the file *demo.costasiella.com* will be used.
+
+.. code-block::bash
+
+    # the upstream component nginx needs to connect to
+    upstream django {
+        server unix:///opt/docker/mounts/costasiella/sockets/app.sock; # for a file socket
+        # TCP socket for easier setup, but it comes with some additional overhead.
+        #server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+    }
+
+    # Rate limiting zone
+    limit_req_zone $binary_remote_addr zone=mylimit:10m rate=10r/s;
+
+    # configuration of the server
+    server {
+        # the port your site will be served on
+        listen      80;
+        # the domain name it will serve for
+        server_name demo.costasiella.com;  # substitute for your domain name
+        charset     utf-8;
+        root        /var/www/html/build/;
+
+        # max upload size
+        client_max_body_size 10M;   # adjust to taste
+
+        # Django media
+        location /d/media  {
+            alias /opt/docker/mounts/costasiella/media/;  # your Django project's media files - amend as required
+        }
+
+        # Django static
+        location /d/static {
+            alias /opt/docker/mounts/costasiella/static/; # your Django project's static files - amend as required
+        }
+
+        # Send all non-media requests to the Django backend
+        # To read more about rate limiting: https://www.nginx.com/blog/rate-limiting-nginx/
+        location /d {
+            limit_req zone=mylimit burst=20 nodelay;
+            uwsgi_pass  django;
+            include     /etc/nginx/uwsgi_params; # the uwsgi_params file you installed
+        }
+
+        # React frontend app
+        location / {
+            alias /var/www/html/build/;
+        }
+    }
+
+Restart the Nginx service
+
+
+Creating an initial user and logging in
+---------------------------------------
+
+Open a webbrowser (tab) and go to <your domain>/d/admin. 
+Log in using the initial superuser credentials created earlier.
+
+*Create an admin group & assign group permissions*
+
+Under the AUTHENTICATION AND AUTHORIZATION SECTION click “Add” next to Groups.
+Give the group a recognizable name (eg. Admins) and click “Choose all” below the available permissions list.
+Click save
+
+*Create user account*
+
+Click “add” next to accounts under the COSTASIELLA section.
+Add a new account and enter the user’s names and an email address in the edit screen after saving. 
+Add the account to the group just created and click save.
+
+*Create email address for account*
+
+Click “Add” next to Email addresses under the ACCOUNTS section. 
+Use the little looking glass next to “user” in the “Add email address” form to select the user just created. 
+Then enter the same email address as entered when saving the user and check both the “Verified” and “Primary” boxes. 
+Click Save.
+
+Almost there, log out of the admin page by clicking LOG OUT in the top right corner. 
+
+*Make the created user an employee to gain access to the backend*
+
+Run the following code in a mysql terminal with a user that has permissions to modify your Costasiella database.
+
+.. code-block:: bash
+
+    use costasiella;
+    update costasiella_account set employee=1 where id=2;
+
+
+Now log in using the credentials your created on <your domain name> (eg. demo.costasiella.com).
