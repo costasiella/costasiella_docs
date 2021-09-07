@@ -458,7 +458,7 @@ In this example the file *demo.costasiella.com* will be used.
 Restart the Nginx service
 
 
-Creating an initial user and logging in
+Create an initial user and sign in
 ---------------------------------------
 
 Open a webbrowser (tab) and go to <your domain>/d/admin. 
