@@ -12,6 +12,20 @@ Prerequisites for this guide
 - At least 4 GB of RAM
 - Sufficient storage to hold the infrastructure components (5GB of free space should easily suffice, but more is recommended to have space for media in the application).
 
+Target audience
+---------------
+
+This guide assumes some experience in Linux system administration. 
+In case you're not comfortable with or knowledgeable about any of the following items, it might be best to ask an experiences Linux system administrator for help.
+Although you might be able to follow this guide by simply copying commands, there's a chance you create security issues exposing your customer data if you don't actually understand what you're copying and why.
+
+- Configuring DNS records
+- Running commands on a Linux terminal
+- Managing Nginx
+- Managing MySQL
+- Managinx Docker
+- Managing SSL certificates
+- Configuring backups on a Linux server
 
 Introduction
 ----------------
@@ -482,3 +496,15 @@ Run the following code in a mysql terminal with a user that has permissions to m
 
 
 Now log in using the credentials your created on <your domain name> (eg. demo.costasiella.com).
+
+Next steps
+----------
+
+Now the Costasiella environment is up and running, you can integrate it into your (hosting) infrastructure as required.
+As these steps can differ greatly depending on the environment Costasiella is installed in, these won't be detailed in this guide.
+Some common next steps can be:
+
+- Publishing it through your load balancer / reverse proxy / Web application firewall
+- Adding SSL certificates
+- Configuring backups
+- Adding the Costasiella url to your monitoring system to check if it's online and performing as it should
