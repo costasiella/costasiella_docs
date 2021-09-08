@@ -457,6 +457,10 @@ In this example the file *demo.costasiella.com* will be used.
 
 Restart the Nginx service
 
+**Apply any database updates that might be available**
+
+Open a browser and go to http://<your domain>/d/update
+
 
 Create an initial user and sign in
 ---------------------------------------
