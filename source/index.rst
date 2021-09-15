@@ -6,11 +6,13 @@
 Welcome to Costasiella's documentation!
 =======================================
 
+So far not much here, but will be added bit by bit in the coming months...
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: General
 
-So far not much here, but will be added bit by bit in the coming months...
+   faq.rst
 
 .. toctree::
     :maxdepth: 1
@@ -21,7 +23,7 @@ So far not much here, but will be added bit by bit in the coming months...
 
 .. toctree::
     :maxdepth: 1
-    :caption: Developer
+    :caption: Developers
 
     developer/setup_development_environment.rst
 
