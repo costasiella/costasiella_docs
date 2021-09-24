@@ -32,6 +32,7 @@ So far not much here, but will be added bit by bit in the coming months...
     :caption: Developer Reference
 
     developer/reference/tinymce_setup.rst
+    developer/reference/django_graphene_query_ordering.rst
 
 
 Indices and tables
