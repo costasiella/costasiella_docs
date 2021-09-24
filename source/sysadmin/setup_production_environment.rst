@@ -1,6 +1,8 @@
 Setup production environment
 =============================
 
+*A quick note: This guide should be mostly correct and complete, but hasn't passed final review yet. In case you run into a problem, please create an issue on github so it can be checked."*
+
 Prerequisites for this guide
 ----------------------------
 
@@ -101,10 +103,10 @@ Use the command "ip a s" to show all network interfaces and look for the one cal
         valid_lft forever preferred_lft forever
     4: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
         link/ether 02:42:50:7f:0c:07 brd ff:ff:ff:ff:ff:ff
-        inet 172.18.0.1/16 brd 172.17.255.255 scope global docker0
+        inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
         valid_lft forever preferred_lft forever
 
-In this case the IP address of the docker interface is 172.18.0.1. This address will be used a few times in this guide. 
+In this case the IP address of the docker interface is 172.17.0.1. This address will be used a few times in this guide. 
 Check which address your docker interface is configured to use and make a note somewhere it's easy to reference when you need it.
 
 
@@ -112,17 +114,17 @@ MySQL configuration
 -------------------
 
 Edit mysql server config in /etc/mysql/mysql.conf.d/mysqld.cnf.
-Set the bind address to localhost (127.0.0.1) and the docker interface address (172.18.0.1 in this example).
+Set the bind address to localhost (127.0.0.1) and the docker interface address (172.17.0.1 in this example).
 Restart the mysql service after chaning the configuration
 
 .. code-block:: bash
 
-    bind-address            = 127.0.0.1,172.18.0.1
+    bind-address            = 127.0.0.1,172.17.0.1
 
 
 Create database for Costasiella & Vault.
 In this example a user with the username "user" and password "password" is created. 
-This user can access the MySQL server from the 172.18.0.0/16 docker subnet.
+This user can access the MySQL server from the 172.17.0.0/16 docker subnet.
 Something more secure is hightly recommended.
 
 .. code-block:: bash
@@ -130,9 +132,9 @@ Something more secure is hightly recommended.
     sudo mysql
     mysql> create database costasiella;
     mysql> create database vault;
-    mysql> create user 'user'@'172.18.%' identified by 'password';
-    mysql> grant all privileges on costasiella.* to 'user'@'172.18.%';
-    mysql> grant all privileges on vault.* to 'user'@'172.18.%';
+    mysql> create user 'user'@'172.17.%' identified by 'password';
+    mysql> grant all privileges on costasiella.* to 'user'@'172.17.%';
+    mysql> grant all privileges on vault.* to 'user'@'172.17.%';
     mysql> flush privileges;
 
 
@@ -335,7 +337,7 @@ Edit /opt/docker/mounts/costasiella/settings/common.py
 
 - Replace the SECRET_KEY value with a random string that's 50 characters long.
 - Update the databases section to allow the backend to connect to the MySQL server running on the host.
-- Find the vault section and update it with the settings created earlier. (Note that the address 172.18.0.1 is the address of the docker interface).
+- Find the vault section and update it with the settings created earlier. (Note that the address 172.17.0.1 is the address of the docker interface).
 
 .. code-block:: bash
     
@@ -347,14 +349,14 @@ Edit /opt/docker/mounts/costasiella/settings/common.py
             'NAME': 'costasiella',
             'USER': 'user',
             'PASSWORD': 'password',
-            'HOST': '172.18.0.1',
+            'HOST': '172.17.0.1',
             'PORT': 3306
         }
     }
     ...
 
     ...
-    VAULT_URL = 'http://172.18.0.1:8200'
+    VAULT_URL = 'http://172.17.0.1:8200'
     VAULT_TOKEN = '<The token you created here>'
     VAULT_TRANSIT_KEY = 'costasiella'
     ...
@@ -383,7 +385,7 @@ Now a few commands need to be executed inside the backend container to:
 
 .. code-block:: bash
 
-    docker exec -i <costasiella backend container name> /bin/bash
+    docker exec -it <costasiella backend container name> /bin/bash
     cd /opt/app
     # Load fixtures
     python manage.py loaddata costasiella/fixtures/*.json
