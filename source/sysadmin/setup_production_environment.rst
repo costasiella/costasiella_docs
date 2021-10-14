@@ -501,7 +501,19 @@ Run the following code in a mysql terminal with a user that has permissions to m
     update costasiella_account set employee=1 where id=2;
 
 
-Now log in using the credentials your created on <your domain name> (eg. demo.costasiella.com).
+Now you can log in using the credentials your created on <your domain name> (eg. demo.costasiella.com).
+
+Setting the site name
+----------------------
+
+The set site name is used in some system email messages, eg. the password reset email.
+
+Open a webbrowser (tab) and go to <your domain>/d/admin. 
+Log in using the initial superuser credentials created earlier.
+
+Navigate to the *Sites* section and click the default domain name *example.com*. 
+Change the domain name and display name to reflect your installation and click *Save*.
+
 
 Next steps
 ----------
