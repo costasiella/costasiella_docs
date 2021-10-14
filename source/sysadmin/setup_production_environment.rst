@@ -363,6 +363,31 @@ Edit /opt/docker/mounts/costasiella/settings/common.py
 
 Save the settings file
 
+**Configure email**
+
+Edit /opt/docker/mounts/costasiella/settings/production.py
+Change the values in the email configuration section to reflect your email infrastructure.
+
+As a general suggestion (feel free to take it or leave it) it could be wise to set up a local postfix server and point your Costasiella to that.
+This way there's a message queue that will hold the messages in case the SMTP server you're sending to isn't accepting email for any reason. 
+Another benefit is simpler email configuration in your Costasiella installation. You can simply point it to the IP of the system holding your postfix server and port 25.
+
+For example:
+
+.. code-block:: bash
+    
+    ...
+    # Email configuration
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = '172.17.0.1'  # In case you run postfix on your docker host
+    EMAIL_PORT = 25
+    DEFAULT_FROM_EMAIL = 'My Name <my_from_email@domain.com>'
+    ...
+
+
+For a full list of email options, please refer to the `Django documentation <https://docs.djangoproject.com/en/3.2/ref/settings/#email-backend>`_
+
+
 Backend setup
 -------------
 
