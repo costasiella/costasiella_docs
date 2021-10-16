@@ -295,7 +295,7 @@ Click *Create policy*
 
 In an SSH or console session on your server:
 
-.. code-block::bash
+.. code-block:: bash
 
     vault login <root token>
     vault token create -policy=use_costasiella_transit -period=768h    
@@ -303,7 +303,7 @@ In an SSH or console session on your server:
 Note down this token for later use in this guide and note that the token expires in 32 days (768 hours).
 For security reasons, Vault doesn't allow tokens to live longer than this by default. However, it's a periodic token so it can be renewed an unlimited number of times.
 
-.. code-block::bash
+.. code-block:: bash
 
     vault login <your created token>
     vault token renew
