@@ -16,6 +16,7 @@ A few items can't be migrated automatically and should therefore be migrated man
 - Event ticket earlybird discounts
 - School subscription price glaccount and costcenter information
 - Prices for drop-in classes & trial classes
+- Groups and group permissions
 
 Data imported
 --------------
