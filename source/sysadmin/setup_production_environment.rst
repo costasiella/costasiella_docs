@@ -495,17 +495,11 @@ Create an initial user and sign in
 Open a webbrowser (tab) and go to <your domain>/d/admin. 
 Log in using the initial superuser credentials created earlier.
 
-*Create an admin group & assign group permissions*
-
-Under the AUTHENTICATION AND AUTHORIZATION SECTION click “Add” next to Groups.
-Give the group a recognizable name (eg. Admins) and click “Choose all” below the available permissions list.
-Click save
-
 *Create user account*
 
 Click “add” next to accounts under the COSTASIELLA section.
 Add a new account and enter the user’s names and an email address in the edit screen after saving. 
-Add the account to the group just created and click save.
+Add the account to the Admins group and click save.
 
 *Create email address for account*
 
