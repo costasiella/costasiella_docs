@@ -4,6 +4,11 @@ Setup development environment
 This page will explain how to setup a development environment for Costasiella.
 A Linux development environment based on Ubuntu 20.04 is presumed in this guide.
 
+Preparation
+--------------
+
+Sign up for reCAPTCHA and create keys that apply to the localhost domain. https://www.google.com/recaptcha/about/
+
 Required packages
 -----------------
 
@@ -138,9 +143,18 @@ Go to your costasiella root dir/app/app and edit settings/common.py
 
 .. code-block:: bash
     
+    ...
+    
     VAULT_URL = ‘http://localhost:8200’
     VAULT_TOKEN = <Your root token here, definitely bad idea for production, but fine for development>
     VAULT_TRANSIT_KEY = “costasiella”
+
+    ...
+
+    RECAPTCHA_PUBLIC_KEY = '<Your site key here>'
+    RECAPTCHA_PRIVATE_KEY = '<Your secret key here>'
+    
+    ...
 
 Prepare for lift off
 ----------------------

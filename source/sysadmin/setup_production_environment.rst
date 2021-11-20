@@ -61,6 +61,12 @@ However, never use that setup on a production system. It's not secure enough, do
 For a production system, there are just a number some components that need to be installed and configured to get Costasiella up and running.
 No way around it unfortunately.
 
+Preparation
+--------------
+
+Sign up for reCAPTCHA and create keys that apply to your domain, eg. demo.costasiella.com. 
+https://www.google.com/recaptcha/about/
+
 Install required packages
 -------------------------
 
@@ -342,6 +348,7 @@ Edit /opt/docker/mounts/costasiella/settings/common.py
 .. code-block:: bash
     
     ...
+
     else:
         DATABASES = {
         'default': {
@@ -353,12 +360,18 @@ Edit /opt/docker/mounts/costasiella/settings/common.py
             'PORT': 3306
         }
     }
-    ...
 
     ...
+
     VAULT_URL = 'http://172.17.0.1:8200'
     VAULT_TOKEN = '<The token you created here>'
     VAULT_TRANSIT_KEY = 'costasiella'
+    
+    ...
+
+    RECAPTCHA_PUBLIC_KEY = '<Your site key here>'
+    RECAPTCHA_PRIVATE_KEY = '<Your secret key here>'
+    
     ...
 
 Save the settings file
