@@ -242,7 +242,7 @@ https://www.vaultproject.io/docs/configuration/listener/tcp
 For now we keep it simple in this guide. Vault will listen on all interfaces and we'll assume that you've firewalled the external interface of your Costasiella server.
 Using this command on your computer (Linux or Mac) will allow you to access the Vault UI on the server from http://localhost:8200 on your computer.
 
-.. code-block::bash
+.. code-block:: bash
 
     ssh -C -L 8200:127.0.0.1:8200 -N <IP of your Costasiella server>
 
