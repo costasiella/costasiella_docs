@@ -263,7 +263,7 @@ Choose transit and click Next.
 Accept the default path called transit and click *Enable engine*.
 
 Create an encryption key for Costasiella by clicking *Create encryption key*. 
-In this guide the key name "Costasiella" will be used. Add that to the name field and click *Create encryption key*.
+In this guide the key name *costasiella* will be used. Add that to the name field and click *Create encryption key*.
 
 **Create a policy**
 

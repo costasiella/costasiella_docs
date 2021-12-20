@@ -78,7 +78,7 @@ Then sign in to vault using the root token.
 Click “Enable new engine” and choose Transit under generic. Enter a recognizable name for the Path, in this document the default name “transit” will be used for the transit engine path. Click enable engine on the bottom of the page.
 
 Click “Create encryption key” and enter a recognizable name. Then click the Create entryption key button. 
-In this document “costasiella” will be used as the name for the encryption key.
+In this document *costasiella* will be used as the name for the encryption key.
 
 In case you’d like to do further vault setup (at some point) using the terminal; add the following lines to the .bashrc or .zshrc file in your home directory.
 
