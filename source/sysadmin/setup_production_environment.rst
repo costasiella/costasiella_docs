@@ -226,7 +226,7 @@ Restart the vault service to reload the configuration file.
 
 Add the following to your .bashrc or .zshrc or whatever file your shell uses.
 
-.. code-block::bash
+.. code-block:: bash
 
     export VAULT_ADDR=http://127.0.0.1:8200
 
