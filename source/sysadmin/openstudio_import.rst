@@ -36,6 +36,7 @@ Data imported
 - school_discovery > organization_discovery
 - school_levels > organization_level
 - school_locations > organization_location (Add one room for each added location)
+- school_shifts > organization_shifts
 - school_subscriptions > organization_subscription
 - school_subscriptions_groups > organization_subscription_group
 - school_subscriptions_groups_subscriptions > organization_subscription_group_subscription
@@ -45,7 +46,7 @@ Data imported
 
 - auth_user (customers) > account & all_auth_email
 - auth_user (businesses) > business
-- auth_user (teacher info) > account_teacher_profile
+- auth_user (teacher info) > account_instructor_profile
 - customers_classcards > account_classcard 
 - customers_notes > account_note
 - customers_orders > finance_order
@@ -92,7 +93,12 @@ Data imported
 - classes_otc_mail > schedule_item_weekly_otc
 - classes_school_classcards_groups > schedule_item_organization_classpass_group
 - classes_school_subscriptions_groups > schedule_item_organization_subscription_group
-- classes_teachers > schedule_item_teacher
+- classes_teachers > schedule_item_account
+
+**Staff schedule**
+
+- shifts > schedule_item
+- shifts_staff > schedule_item_account
 
 **Events / workshops**
 
