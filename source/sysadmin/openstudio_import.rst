@@ -98,6 +98,7 @@ Data imported
 **Staff schedule**
 
 - shifts > schedule_item
+- shifts_otc > schedule_item_weekly_otc
 - shifts_staff > schedule_item_account
 
 **Events / workshops**
