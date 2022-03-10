@@ -502,38 +502,51 @@ Restart the Nginx service
 Open a browser and go to http://<your domain>/d/update
 
 
-Create an initial user and sign in
----------------------------------------
+Configure the superuser account as a Costasiella admin
+-------------------------------------------------------
 
 Open a webbrowser (tab) and go to <your domain>/d/admin. 
 Log in using the initial superuser credentials created earlier.
 
-*Create user account*
-
-Click “add” next to accounts under the COSTASIELLA section.
-Add a new account and enter the user’s names and an email address in the edit screen after saving. 
-Add the account to the Admins group and click save.
-
-*Create email address for account*
-
-Click “Add” next to Email addresses under the ACCOUNTS section. 
-Use the little looking glass next to “user” in the “Add email address” form to select the user just created. 
-Then enter the same email address as entered when saving the user and check both the “Verified” and “Primary” boxes. 
-Click Save.
-
-Almost there, log out of the admin page by clicking LOG OUT in the top right corner. 
-
-*Make the created user an employee to gain access to the backend*
+Navigate to Costasiella > Accounts and click the email address of the superuser. Now add the user to the Admins group and click save.
 
 Run the following code in a mysql terminal with a user that has permissions to modify your Costasiella database.
 
 .. code-block:: bash
 
     use costasiella;
-    update costasiella_account set employee=1 where id=2;
+    update costasiella_account set employee=1 where id=1;
 
+This enabled the superuser to sign in to the backend with admin privileges.
 
-Now you can log in using the credentials your created on <your domain name> (eg. demo.costasiella.com).
+Create additional admin accounts
+---------------------------------
+
+Creating at least one other admin account is always a good idea. 
+This way you don't have to sign in for daily use with a user that has superuser status.
+
+**Create additional account**
+Log in using the superuser credentials your created on <your domain name> (eg. demo.costasiella.com).
+
+Navigate to the backend and then to relations > accounts. Add a new account.
+Edit the newly created account and set the Employee switch to on.
+
+**Grant Admin privileges**
+Go go to <your domain>/d/admin and sign in with your superuser account.
+
+Navigate to the accounts list under the COSTASIELLA section. Click the email address of the account you just created to edit it.
+Add the account to the Admins group and click save.
+
+**Set password**
+Again click the email address of the account you just created to edit it.
+In the password field, click the small link "this form" to set a password.
+
+After setting an initial password, the additional admin account is ready to be used.
+
+**Note**
+Preferably test it in another webbrowser. It's possible to sign in to <your domain>/d/admin and <your domain> using different accounts in the same browser.
+This can give rise to unexpected behavour. In case Costasiella behaves strangely for you during these steps, sign out of both the <your domain> and <your domain>/d/admin and try again.
+
 
 Setting the site name
 ----------------------
