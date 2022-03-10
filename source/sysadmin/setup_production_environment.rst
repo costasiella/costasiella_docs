@@ -9,8 +9,8 @@ Prerequisites for this guide
 
 - A DNS record pointing to the server should be in place, eg. demo.costasiella.com. This is not supported: costasiella.com/demo
 - A Ubuntu 20.04 server 
-  (Another flavour of Linux is also ok, but you might have to change some package names and take into account that not every distro build their packages with the same parameters.)
-- At least 2 (v)CPU cores with performance at least equal to a 2nd generation Intel i5 desktop processor
+  (Another flavour of Linux is also ok, but you might have to change some package names and take into account that not every distro build their packages with the same parameters).
+- At least 2 (v)CPU cores with performance equal to a 2nd generation Intel i5 desktop processor or greater.
 - At least 4 GB of RAM
 - Sufficient storage to hold the infrastructure components (5GB of free space should easily suffice, but more is recommended to have space for media in the application).
 
@@ -517,7 +517,7 @@ Run the following code in a mysql terminal with a user that has permissions to m
     use costasiella;
     update costasiella_account set employee=1 where id=1;
 
-This enabled the superuser to sign in to the backend with admin privileges.
+This enables the superuser to sign in to the backend with admin privileges.
 
 Create additional admin accounts
 ---------------------------------
@@ -526,24 +526,28 @@ Creating at least one other admin account is always a good idea.
 This way you don't have to sign in for daily use with a user that has superuser status.
 
 **Create additional account**
+
 Log in using the superuser credentials your created on <your domain name> (eg. demo.costasiella.com).
 
 Navigate to the backend and then to relations > accounts. Add a new account.
 Edit the newly created account and set the Employee switch to on.
 
 **Grant Admin privileges**
+
 Go go to <your domain>/d/admin and sign in with your superuser account.
 
 Navigate to the accounts list under the COSTASIELLA section. Click the email address of the account you just created to edit it.
 Add the account to the Admins group and click save.
 
 **Set password**
+
 Again click the email address of the account you just created to edit it.
 In the password field, click the small link "this form" to set a password.
 
 After setting an initial password, the additional admin account is ready to be used.
 
 **Note**
+
 Preferably test it in another webbrowser. It's possible to sign in to <your domain>/d/admin and <your domain> using different accounts in the same browser.
 This can give rise to unexpected behavour. In case Costasiella behaves strangely for you during these steps, sign out of both the <your domain> and <your domain>/d/admin and try again.
 

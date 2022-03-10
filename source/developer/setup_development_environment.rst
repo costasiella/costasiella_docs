@@ -186,42 +186,24 @@ The Django development server runs on port 8000 in case you'd like to access it 
 
 Open a browser and go to http://localhost:3000/d/update
 
-Create a user and log in
--------------------------
+Configure the superuser account as a Costasiella admin
+-------------------------------------------------------
 
 Open a webbrowser (tab) and go to <your domain>/d/admin. 
 Log in using the initial superuser credentials created earlier.
 
-*Create user account*
-
-Click “add” next to accounts under the COSTASIELLA section.
-Add a new account and enter the user’s names and an email address in the edit screen after saving. 
-Add the account to the Admins group and click save.
-
-*Create email address for account*
-
-Click “Add” next to Email addresses under the ACCOUNTS section. 
-Use the little looking glass next to “user” in the “Add email address” form to select the user just created. 
-Then enter the same email address as entered when saving the user and check both the “Verified” and “Primary” boxes. 
-Click Save.
-
-Almost there, log out of the admin page by clicking LOG OUT in the top right corner. 
-
-*Make the created user an employee to gain access to the backend*
+Navigate to Costasiella > Accounts and click the email address of the superuser. Now add the user to the Admins group and click save.
 
 Run the following code in a mysql terminal with a user that has permissions to modify your Costasiella database.
 
 .. code-block:: bash
 
     use costasiella;
-    update costasiella_account set employee=1 where id=2;
+    update costasiella_account set employee=1 where id=1;
 
-Now log in using the credentials your created.
+This enables the superuser to sign in to the backend with admin privileges.
 
-In case a “CSRF Token Failed” error message shows, click the back button in the browser and try again. 
-It might show up in some cases during the first login in the development environment. After a refresh/retry it shouldn’t show anymore.
-
-
+Done, the superuser created can now sign in to both the frontend and backend.
 
 GraphiQL
 ---------

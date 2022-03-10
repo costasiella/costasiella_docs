@@ -10,16 +10,12 @@ At the moment there's not much here yet, but it will be added little by little o
 
 ### Install tools
 
-python3-sphinx is a required package. For example on Fedora it can be installed like this: 
+The commands below assume a working python3 environment
+
+Install Sphinx and the theme.
 
 ```bash
-sudo dnf install python3-sphinx
-```
-
-Then we need the theme
-
-```bash
-sudo pip3 install sphinx-rtd-theme
+sudo pip3 install sphinx sphinx-rtd-theme
 ```
 
 Then we can build the docs by executing the following command in this directory
