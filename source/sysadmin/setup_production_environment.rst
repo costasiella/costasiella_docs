@@ -18,7 +18,7 @@ Target audience
 ---------------
 
 This guide assumes some experience in Linux system administration. 
-In case you're not comfortable with or knowledgeable about any of the following items, it might be best to ask an experiences Linux system administrator for help.
+In case you're not comfortable with or knowledgeable about any of the following items, it might be best to ask an experienced Linux system administrator for help.
 Although you might be able to follow this guide by simply copying commands, there's a chance you create security issues exposing your customer data if you don't actually understand what you're copying and why.
 
 - Configuring DNS records
