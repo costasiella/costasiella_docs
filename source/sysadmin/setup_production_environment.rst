@@ -575,3 +575,20 @@ Some common next steps can be:
 - Adding SSL certificates
 - Configuring backups
 - Adding the Costasiella url to your monitoring system to check if it's online and performing as it should
+
+
+Troubleshooting
+----------------
+
+**Database wasn't reachable on backend container start**
+
+In case a firewall or incorrect configuration prevented the backend from connecting to the database on startup, database migrations might not have run.
+Symptoms might include messages that tables can't be found.
+
+Resultion: Ensure the backend container can connect to the database and restart it. 
+
+**Fixtures don;t load with error: Connection refused**
+
+This error occurs when the backend container can't connect to your Vault instance. 
+
+Resolution: Ensure the backend container can connect to your Vault instance.
