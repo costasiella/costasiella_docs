@@ -323,6 +323,7 @@ Backend setup preparation
 
 .. code-block:: bash
 
+    mkdir -pv /opt/docker/mounts/costasiella/logs
     mkdir -pv /opt/docker/mounts/costasiella/media
     mkdir -pv /opt/docker/mounts/costasiella/sockets
     mkdir -pv /opt/docker/mounts/costasiella/static
