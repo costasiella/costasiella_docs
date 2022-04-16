@@ -520,6 +520,9 @@ Run the following code in a mysql terminal with a user that has permissions to m
 
 This enables the superuser to sign in to the backend with admin privileges.
 
+*Note: The superuser isn't created in the "regular" way. It doesn't have records in all the tables that regular accounts have.
+It's highly recommened to use an account created under relations > accounts that's been granted admin privileges to manage Costasiella.*
+
 Create additional admin accounts
 ---------------------------------
 
