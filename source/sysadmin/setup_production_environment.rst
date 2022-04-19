@@ -130,6 +130,7 @@ Restart the mysql service after chaning the configuration
 
 Create database for Costasiella & Vault.
 In this example a user with the username "user" and password "password" is created. 
+For your environment, set something more secure than "password" as the password.
 This user can access the MySQL server from the 172.17.0.0/16 docker subnet.
 Something more secure is hightly recommended.
 
@@ -141,6 +142,13 @@ Something more secure is hightly recommended.
     mysql> create user 'user'@'172.17.%' identified by 'password';
     mysql> grant all privileges on costasiella.* to 'user'@'172.17.%';
     mysql> grant all privileges on vault.* to 'user'@'172.17.%';
+
+In case you can't restart the vault service because the user can't connect:
+
+.. code-block:: bash
+
+    mysql> create user 'user'@'localhost' identified by 'password';
+    mysql> grant all privileges on vault.* to 'user'@'localhost';
     mysql> flush privileges;
 
 
@@ -225,6 +233,7 @@ Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite e
 Restart the vault service to reload the configuration file.
 
 Add the following to your .bashrc or .zshrc or whatever file your shell uses.
+Also type the command in your current shell to be able to execute vault commands.
 
 .. code-block:: bash
 

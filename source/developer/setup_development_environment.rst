@@ -81,6 +81,7 @@ Click “Create encryption key” and enter a recognizable name. Then click the 
 In this document *costasiella* will be used as the name for the encryption key.
 
 In case you’d like to do further vault setup (at some point) using the terminal; add the following lines to the .bashrc or .zshrc file in your home directory.
+Also type the command in your current shell if you need to be able to execute vault commands without restarting your current shell session.
 
 .. code-block:: bash
 
