@@ -16,7 +16,7 @@ Install required packages
 
 .. code-block:: bash
 
-    sudo apt install curl git mysql-server python3-mysqldb libmysqlclient-dev redis-server redis-tools python-pip libffi-dev
+    sudo apt install curl git mysql-server python3-mysqldb python3-testresources libmysqlclient-dev redis-server redis-tools python-pip libffi-dev
     sudo pip install virtualenvwrapper
 
 
@@ -174,7 +174,7 @@ Go to <your costasiella root dir>/app (this folder should contain a file called 
 Start the npm development server;
 Open a new terminal tab or window and go your costasiella frontend root dir.
 
-.. code-block
+.. code-block:: bash
 
     npm run start
 
