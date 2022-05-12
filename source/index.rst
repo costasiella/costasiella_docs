@@ -20,6 +20,7 @@ So far not much here, but will be added bit by bit in the coming months...
 
     sysadmin/setup_production_environment.rst
     sysadmin/openstudio_import.rst
+    sysadmin/openstudio_migration.rst
 
 .. toctree::
     :maxdepth: 1
