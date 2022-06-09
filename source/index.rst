@@ -16,6 +16,12 @@ So far not much here, but will be added bit by bit in the coming months...
 
 .. toctree::
     :maxdepth: 1
+    :caption: User manual
+
+    user_manual/managing_account_passwords.rst
+
+.. toctree::
+    :maxdepth: 1
     :caption: System administration
 
     sysadmin/setup_production_environment.rst
@@ -36,9 +42,10 @@ So far not much here, but will be added bit by bit in the coming months...
     developer/reference/django_graphene_query_ordering.rst
 
 
-Indices and tables
-==================
+.. Indices and tables
+.. ==================
 
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-* :ref:`search`
+.. .. * :ref:`genindex`
+.. .. * :ref:`modindex`
+.. * :ref:`search`
+

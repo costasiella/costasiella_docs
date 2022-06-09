@@ -109,7 +109,7 @@ NPM
     sudo apt install nodejs
     cd frontend
     # install node modules
-    npm install
+    npm install --legacy-peer-deps
 
 Python virtual environment
 ---------------------------
