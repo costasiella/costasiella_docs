@@ -577,6 +577,23 @@ Navigate to the *Sites* section and click the default domain name *example.com*.
 Change the domain name and display name to reflect your installation and click *Save*.
 
 
+Configuring background tasks
+-----------------------------
+
+To have invoices marked as overdue a background task should run daily.
+
+Open a webbrowser (tab) and go to <your domain>/d/admin. 
+Log in using the initial superuser credentials created earlier.
+
+Navigate to the *Periodic tasks* section and check *Add* next to *Periodic tasks*
+Give the task a recognizable name, eg. "Mark invoices as overdue"
+Choose the task *costasiella.tasks.finance.invoices.tasks.finance_invoices_mark_overdue*
+Ensure the task is set to *Enabled*
+Add a crontab schedule with the minutes and hours set to 0 and the other values to * to have the task run at midnight.
+The task can run at any time convenient for you, running it at midnight is just an example.
+Click save to finish configuring the background task
+
+
 Next steps
 ----------
 
