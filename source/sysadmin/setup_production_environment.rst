@@ -373,18 +373,27 @@ Edit /opt/docker/mounts/costasiella/settings/common.py
 
     ...
 
-    VAULT_URL = 'http://172.17.0.1:8200'
-    VAULT_TOKEN = '<The token you created here>'
-    VAULT_TRANSIT_KEY = 'costasiella'
-    
-    ...
-
     RECAPTCHA_PUBLIC_KEY = '<Your site key here>'
     RECAPTCHA_PRIVATE_KEY = '<Your secret key here>'
     
     ...
 
 Save the settings file
+
+**Configure docker-compose**
+
+Edit /opt/docker/mounts/costasiella/costasiella/docker-compose.yml and set the Vault environment variables.
+
+.. code-block:: bash
+    
+    ...
+
+      - VAULT_URL=http://172.17.0.1:8200
+      - VAULT_TOKEN=<The Vault token generated earlier>
+      - VAULT_TRANSIT_KEY=costasiella
+
+    ...
+
 
 **Configure email**
 
