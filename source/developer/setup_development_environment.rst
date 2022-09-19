@@ -88,6 +88,8 @@ Also type the command in your current shell if you need to be able to execute va
     # Vault config
     complete -C /usr/local/bin/vault vault
     export VAULT_ADDR=http://127.0.0.1:8200
+    export VAULT_TOKEN=<Your root token here, definitely bad idea for production, but fine for development>
+    export VAULT_TRANSIT_KEY=costasiella
 
 
 Fetch source from git
@@ -143,12 +145,6 @@ Go to your costasiella root dir/app/app and edit settings/common.py
 * Under the vault configuration section edit the following setting to reflect your environment
 
 .. code-block:: bash
-    
-    ...
-    
-    VAULT_URL = ‘http://localhost:8200’
-    VAULT_TOKEN = <Your root token here, definitely bad idea for production, but fine for development>
-    VAULT_TRANSIT_KEY = “costasiella”
 
     ...
 
