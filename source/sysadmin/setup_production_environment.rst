@@ -58,8 +58,8 @@ Quick start
 In case you're looking to evaluate Costasiella, the guide on setting up a local development environment might be a bit quicker.
 However, never use that setup on a production system. It's not secure enough, doesn't scale well when it comes to performance and will be hard to maintain.
 
-For a production system, there are just a number some components that need to be installed and configured to get Costasiella up and running.
-No way around it unfortunately.
+For a production system, there are a number of components that need to be installed and configured to get Costasiella up and running.
+No way around it.
 
 Preparation
 --------------
@@ -139,9 +139,9 @@ Something more secure is hightly recommended.
     sudo mysql
     mysql> create database costasiella;
     mysql> create database vault;
-    mysql> create user 'user'@'172.17.%' identified by 'password';
-    mysql> grant all privileges on costasiella.* to 'user'@'172.17.%';
-    mysql> grant all privileges on vault.* to 'user'@'172.17.%';
+    mysql> create user 'user'@'172.%' identified by 'password';
+    mysql> grant all privileges on costasiella.* to 'user'@'172.%';
+    mysql> grant all privileges on vault.* to 'user'@'172.%';
 
 In case you can't restart the vault service because the user can't connect:
 
@@ -152,22 +152,86 @@ In case you can't restart the vault service because the user can't connect:
     mysql> flush privileges;
 
 
-Install Hashicorp Vault
--------------------------
+Install Hashicorp Vault client
+-------------------------------
+
+Vault is installed on the host for easier management of the Vault container in the Docker compose stack. It isn't used to serve Costasiella. 
 
 Please visit the following URL and follow the setup steps of your chosen method. For this guide using the package manager (apt) is assumed.
 https://learn.hashicorp.com/tutorials/vault/getting-started-install
 
-After installing vault, make it start at boot and configure it to use a MySQL database for it's storage instead of files. 
+After installing vault, disable it from starting as a service.
 
 .. code-block:: bash
 
-    sudo systemctl enable vault
+    sudo systemctl stop vault
+    sudo systemctl disable vault
+
+Add the following to your .bashrc or .zshrc or whatever file your shell uses.
+Also type the command in your current shell to be able to execute vault commands.
+
+.. code-block:: bash
+
+    export VAULT_ADDR=http://127.0.0.1:8200
+
+
+Backend setup preparation
+-------------------------
+
+**Create directories to hold docker bind mounts**
+
+.. code-block:: bash
+
+    mkdir -pv /opt/docker/compose/costasiella
+    mkdir -pv /opt/docker/mounts/costasiella/logs
+    mkdir -pv /opt/docker/mounts/costasiella/media
+    mkdir -pv /opt/docker/mounts/costasiella/sockets
+    mkdir -pv /opt/docker/mounts/costasiella/static
+    mkdir -pv /opt/docker/mounts/costasiella/vault_config
+
+**Edit Django settings**
+
+Get the costasiella common.py and production.py settings from https://github.com/costasiella/costasiella/tree/main/app/app/settings. 
+Put common.py and production.py in /opt/docker/mounts/costasiella/settings.
+
+Edit /opt/docker/mounts/costasiella/settings/common.py
+
+- Replace the SECRET_KEY value with a random string that's 50 characters long.
+- Update the databases section to allow the backend to connect to the MySQL server running on the host.
+- Find the vault section and update it with the settings created earlier. (Note that the address 172.17.0.1 is the address of the docker interface).
+
+.. code-block:: bash
+    
+    ...
+
+    else:
+        DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'costasiella',
+            'USER': 'user',
+            'PASSWORD': 'password',
+            'HOST': '172.17.0.1',
+            'PORT': 3306
+        }
+    }
+
+    ...
+
+    RECAPTCHA_PUBLIC_KEY = '<Your site key here>'
+    RECAPTCHA_PRIVATE_KEY = '<Your secret key here>'
+    
+    ...
+
+Save the settings file
+
+**Create Vault configuration file**
 
 Configure Vault to use MySQL storage and don't use TLS for this example guide to keep things simple. 
 In production it's recommended to configure this.
 
-Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite editor.
+Copy /etc/vault.d/vault.hcl to /opt/docker/mounts/costasiella/vault_config/vault.hcl
+Then edit the vault.hcl in /opt/docker/mounts/costasiella/vault_config
 
 - Comment out the file storage section
 - Configure MySQL storage
@@ -180,7 +244,7 @@ Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite e
     ui = true
 
     #mlock = true
-    #disable_mlock = true
+    disable_mlock = true
 
     #storage "file" {
     #  path = "/opt/vault/data"
@@ -191,6 +255,7 @@ Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite e
     username = "user"
     password = "password"
     database = "vault"
+    plaintext_connection_allowed = true 
     }
 
     #storage "consul" {
@@ -232,19 +297,21 @@ Open the Vault configuration file at /etc/vault.d/vault.hcl with your favorite e
 
 Restart the vault service to reload the configuration file.
 
-Add the following to your .bashrc or .zshrc or whatever file your shell uses.
-Also type the command in your current shell to be able to execute vault commands.
+**Fetch the Docker compose & costasiella env files from GitHub**
+
+Get the docker-compose.yml and costasiella.env file from https://github.com/costasiella/costasiella and put them in /opt/docker/compose/costasiella.
+Then start the costasiella containers. At this point Vault will be unconfigured and Costasiella won't be functional yet. The next step is configuring Vault.
 
 .. code-block:: bash
 
-    export VAULT_ADDR=http://127.0.0.1:8200
-
+    cd /opt/docker/compose/costasiella
+    docker compose up
 
 **Perform initial setup for Vault**
 
 Create an SSH tunnel to map port 8200 on your Costasiella server to port 8200 on your device.
-Port 8200 should not be reachable on the server from the word wide web, please firewall it.
-Or a cleaner approach is to create multiple listeners. One for localhost and one for the docker interface. 
+Port 8200 should not be reachable on the server from the word wide web, please make sure to firewall it.
+Alternatively a cleaner approach is to create multiple listeners. One for localhost and one for the docker interface. 
 Have a look here at the Vault docs for more info:
 https://www.vaultproject.io/docs/configuration/listener/tcp
 
@@ -325,75 +392,9 @@ For security reasons, Vault doesn't allow tokens to live longer than this by def
 
 Don't forget to regularly renew your token to ensure Costasiella doesn't lose access to Vault.
 
-Backend setup preparation
--------------------------
+**Set token in costsasielle env file**
 
-**Create directories to hold docker bind mounts**
-
-.. code-block:: bash
-
-    mkdir -pv /opt/docker/mounts/costasiella/logs
-    mkdir -pv /opt/docker/mounts/costasiella/media
-    mkdir -pv /opt/docker/mounts/costasiella/sockets
-    mkdir -pv /opt/docker/mounts/costasiella/static
-
-**Fetch backend code from GitHub**
-
-The settings directory is copied to a separate bind mount point so it can persist after an update.
-
-.. code-block:: bash
-
-    cd /opt/docker/mounts/costasiella
-    git clone https://github.com/costasiella/costasiella.git
-    cp -prv /opt/docker/mounts/costasiella/costasiella/app/app/settings /opt/docker/mounts/costasiella/settings
-
-**Edit Django settings**
-
-Edit /opt/docker/mounts/costasiella/settings/common.py
-
-- Replace the SECRET_KEY value with a random string that's 50 characters long.
-- Update the databases section to allow the backend to connect to the MySQL server running on the host.
-- Find the vault section and update it with the settings created earlier. (Note that the address 172.17.0.1 is the address of the docker interface).
-
-.. code-block:: bash
-    
-    ...
-
-    else:
-        DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'costasiella',
-            'USER': 'user',
-            'PASSWORD': 'password',
-            'HOST': '172.17.0.1',
-            'PORT': 3306
-        }
-    }
-
-    ...
-
-    RECAPTCHA_PUBLIC_KEY = '<Your site key here>'
-    RECAPTCHA_PRIVATE_KEY = '<Your secret key here>'
-    
-    ...
-
-Save the settings file
-
-**Configure docker-compose**
-
-Edit /opt/docker/mounts/costasiella/costasiella/docker-compose.yml and set the Vault environment variables.
-
-.. code-block:: bash
-    
-    ...
-
-      - VAULT_URL=http://172.17.0.1:8200
-      - VAULT_TOKEN=<The Vault token generated earlier>
-      - VAULT_TRANSIT_KEY=costasiella
-
-    ...
-
+Edit /opt/docker/compose/costasiella/costasiella.env and add the token that was created in the previous step.
 
 **Configure email**
 
@@ -425,12 +426,13 @@ Backend setup
 
 **Starting containers**
 
-Now it's time to spin up the containers holding the backend code.
+Now it's time to restart the containers holding the backend code to make them aware of the config changes made in the previous steps.
 To do this, we're going into the folder holding the code and use docker-compose to bring the environment online.
 
 .. code-block:: bash
 
-    cd /opt/docker/mounts/costasiella/costasiella
+    cd /opt/docker/compose/costasiella
+    sudo docker-compose stop
     sudo docker-compose up
 
 **Getting the environment ready**
@@ -626,7 +628,7 @@ Symptoms might include messages that tables can't be found.
 
 Resultion: Ensure the backend container can connect to the database and restart it. 
 
-**Fixtures don;t load with error: Connection refused**
+**Fixtures don't load with error: Connection refused**
 
 This error occurs when the backend container can't connect to your Vault instance. 
 
