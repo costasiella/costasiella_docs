@@ -185,6 +185,7 @@ Backend setup preparation
     mkdir -pv /opt/docker/compose/costasiella
     mkdir -pv /opt/docker/mounts/costasiella/logs
     mkdir -pv /opt/docker/mounts/costasiella/media
+    mkdir -pv /opt/docker/mounts/costasiella/media_protected
     mkdir -pv /opt/docker/mounts/costasiella/sockets
     mkdir -pv /opt/docker/mounts/costasiella/static
     mkdir -pv /opt/docker/mounts/costasiella/vault_config
@@ -495,6 +496,12 @@ In this example the file *demo.costasiella.com* will be used.
         # Django media
         location /d/media  {
             alias /opt/docker/mounts/costasiella/media/;  # your Django project's media files - amend as required
+        }
+
+        # Django protected media
+        location /d/media_protected {
+            internal;
+            alias /opt/docker/mounts/costasiella/media_protected/;  # your Django project's protected media files - amend as required
         }
 
         # Django static
